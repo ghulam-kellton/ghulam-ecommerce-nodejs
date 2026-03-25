@@ -1,6 +1,7 @@
 const express = require('express');
 const userController = require('../controllers/userController');
 const { protect, restrictTo } = require('../middleware/authMiddleware');
+const { ROLES } = require('../constants/roles');
 
 const router = express.Router();
 
@@ -8,7 +9,7 @@ const router = express.Router();
 router.get(
     '/',
     protect,
-    restrictTo('admin'),
+    restrictTo(ROLES.ADMIN),
     userController.getUsers
 );
 
@@ -16,10 +17,10 @@ router.get(
 router.patch(
     '/:id',
     protect,
-    restrictTo('admin'),
+    restrictTo(ROLES.ADMIN),
     userController.editUser
 );
 
-router.delete('/:id', protect, restrictTo('admin'), userController.deleteUser);
+router.delete('/:id', protect, restrictTo(ROLES.ADMIN), userController.deleteUser);
 
 module.exports = router;

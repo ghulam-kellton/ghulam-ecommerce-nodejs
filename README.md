@@ -200,3 +200,10 @@ The project utilizes **Jest** and **Supertest** to achieve high coverage:
 1.  **Mocks:** Third-party services (Stripe/Cloudinary) are mocked using `PassThrough` streams to simulate real file uploads without hitting API limits.
 2.  **Order Flow:** Tests a complete user journey from signup → product creation → cart → payment webhook simulation.
 3.  **Edge Cases:** Explicitly tests `checkout.session.expired` and `payment_intent.payment_failed` to ensure database integrity even when payments fail.
+
+## 🧪 Testing & Reports
+We use Jest for unit and E2E testing.
+
+* **Run Tests:** `npm test`
+* **Generate HTML Report:** `npm run test:html`
+  *(The report will be generated at `./jest_html_reporters.html`)*
