@@ -15,7 +15,7 @@ exports.addProduct = async (req, res, next) => {
             req.body.images = req.files.map(file => file.path);
         }
         // If 'category' is a string name, convert it to an ID
-        if (typeof req.body.category === 'string' && req.body.category.length !== 24) {
+        if (typeof req.body.category === 'string' && req.body.category.length !== 24 && !req.body.category.startsWith('{{')) {
             req.body.category = await categoryService.getOrCreateCategory(req.body.category);
         }
         const product = await productService.createProduct(req.body);

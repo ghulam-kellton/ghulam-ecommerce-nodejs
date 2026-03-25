@@ -174,11 +174,13 @@ token: (Leave empty; populated automatically upon Login)
 
 category_id: (Populate this after creating a category to use in Product creation)
 
+product_id: (Populate this after creating a product to use in checkout)
+
 3. Automated Authentication Flow
 
 The Login request contains a "Test Script" that automatically captures the JWT from the response and saves it to the {{token}} variable.
 
-Note: Once you login, you don't need to copy-paste tokens! Subsequent requests (Create Product, Checkout) will use the saved token automatically.
+Note: Once we login, we don't need to copy-paste tokens! Subsequent requests (Create Product, Checkout) will use the saved token automatically.
 
 4. Testing Image Uploads
 
