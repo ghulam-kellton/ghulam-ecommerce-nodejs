@@ -183,7 +183,7 @@
               "script": {
                 "exec": [
                   "var jsonData = pm.response.json();",
-                  "// Use your actual response structure: { status: 'success', data: { category: { _id: \"...\" } } }",
+                  "",
                   "if (jsonData.data && jsonData.data.category && jsonData.data.category._id) {",
                   "    pm.environment.set(\"category_id\", jsonData.data.category._id);",
                   "} else if (jsonData.data && jsonData.data._id) {",
@@ -320,16 +320,11 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "// Parse the response",
                   "var jsonData = pm.response.json();",
                   "",
-                  "// Based on your controller: res.status(201).json({ status: 'success', data: { product } });",
                   "if (jsonData.data && jsonData.data.product && jsonData.data.product._id) {",
                   "    var id = jsonData.data.product._id;",
                   "    pm.environment.set(\"product_id\", id);",
-                  "    console.log(\"Product ID saved successfully: \" + id);",
-                  "} else {",
-                  "    console.log(\"Could not find product _id in response. Check the Console (Ctrl+Alt+C)\");",
                   "}"
                 ],
                 "type": "text/javascript",
