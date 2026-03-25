@@ -22,30 +22,62 @@ The project follows a **Layered Architecture (Service-Repository Pattern)** to s
 erDiagram
     USER ||--o{ ORDER : places
     USER ||--|| CART : owns
-    CATEGORY ||--o{ PRODUCT : contains
-    CART ||--o{ CART_ITEM : holds
-    ORDER ||--o{ ORDER_ITEM : contains
-    PRODUCT ||--o{ CART_ITEM : added_to
-    PRODUCT ||--o{ ORDER_ITEM : purchased_in
+    CATEGORY ||--o{ PRODUCT : categorizes
+    CART ||--o{ CART_ITEM : contains
+    ORDER ||--o{ ORDER_ITEM : consists_of
+    PRODUCT ||--o{ CART_ITEM : "added as"
+    PRODUCT ||--o{ ORDER_ITEM : "purchased as"
 
     USER {
-        string id
-        string email
-        string password
-        string role
-    }
-    PRODUCT {
-        string id
+        ObjectId _id PK
         string name
+        string email UK
+        string password
+        string role "user/admin"
+        date createdAt
+    }
+
+    CATEGORY {
+        ObjectId _id PK
+        string name UK
+        string slug UK
+    }
+
+    PRODUCT {
+        ObjectId _id PK
+        string name
+        string description
         number price
-        string[] images
+        string[] images "Cloudinary URLs"
+        string[] cloudinary_ids "For deletion"
+        ObjectId category_id FK
         int stock
     }
+
+    CART {
+        ObjectId _id PK
+        ObjectId user_id FK
+    }
+
+    CART_ITEM {
+        ObjectId product_id FK
+        int quantity
+    }
+
     ORDER {
-        string id
-        string stripeSessionId
-        string status
+        ObjectId _id PK
+        ObjectId user_id FK
+        string stripeSessionId UK
+        string status "pending/paid/failed/expired"
         number totalAmount
+        string shippingAddress
+        date createdAt
+    }
+
+    ORDER_ITEM {
+        ObjectId product_id FK
+        int quantity
+        number price "Snapshot at time of purchase"
     }
 ```
 
