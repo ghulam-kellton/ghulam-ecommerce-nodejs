@@ -1,486 +1,591 @@
 {
-	"info": {
-		"name": "E-Commerce Master API",
-		"description": "Complete Flow: Auth, CRUD, Admin Lists, Cart, and Stripe Checkout",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-	},
-	"item": [
-		{
-			"name": "1. User & Auth",
-			"item": [
-				{
-					"name": "Signup",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"name\": \"Test Admin\",\n    \"email\": \"admin@example.com\",\n    \"password\": \"password123\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/auth/signup",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"auth",
-								"signup"
-							]
-						}
-					}
-				},
-				{
-					"name": "Login",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var jsonData = pm.response.json();",
-									"if (jsonData.token) { pm.environment.set(\"token\", jsonData.token); }"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"email\": \"admin@example.com\",\n    \"password\": \"password123\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/auth/login",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"auth",
-								"login"
-							]
-						}
-					}
-				}
-			]
-		},
-		{
-			"name": "2. Category Management",
-			"item": [
-				{
-					"name": "List All Categories",
-					"request": {
-						"method": "GET",
-						"url": {
-							"raw": "{{base_url}}/categories",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"categories"
-							]
-						}
-					}
-				},
-				{
-					"name": "Create Category",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var jsonData = pm.response.json();",
-									"if (jsonData.data && jsonData.data._id) { pm.environment.set(\"category_id\", jsonData.data._id); }"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"name\": \"Electronics\",\n    \"slug\": \"electronics\",\n    \"description\": \"All tech gadgets\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/categories",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"categories"
-							]
-						}
-					}
-				},
-				{
-					"name": "Edit Category",
-					"request": {
-						"method": "PATCH",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"name\": \"Modern Electronics\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/categories/{{category_id}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"categories",
-								"{{category_id}}"
-							]
-						}
-					}
-				},
-				{
-					"name": "Delete Category",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/categories/{{category_id}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"categories",
-								"{{category_id}}"
-							]
-						}
-					}
-				}
-			]
-		},
-		{
-			"name": "3. Product Management",
-			"item": [
-				{
-					"name": "List All Products",
-					"request": {
-						"method": "GET",
-						"url": {
-							"raw": "{{base_url}}/products",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"products"
-							]
-						}
-					}
-				},
-				{
-					"name": "Create Product",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var jsonData = pm.response.json();",
-									"if (jsonData.data && jsonData.data._id) { pm.environment.set(\"product_id\", jsonData.data._id); }"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}"
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "name",
-									"value": "MacBook Pro",
-									"type": "text"
-								},
-								{
-									"key": "price",
-									"value": "2400",
-									"type": "text"
-								},
-								{
-									"key": "description",
-									"value": "M3 Chip Laptop",
-									"type": "text"
-								},
-								{
-									"key": "category",
-									"value": "{{category_id}}",
-									"type": "text"
-								},
-								{
-									"key": "stock",
-									"value": "10",
-									"type": "text"
-								},
-								{
-									"key": "images",
-									"type": "file",
-									"src": []
-								}
-							]
-						},
-						"url": {
-							"raw": "{{base_url}}/products",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"products"
-							]
-						}
-					}
-				},
-				{
-					"name": "Edit Product",
-					"request": {
-						"method": "PATCH",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"price\": 2299\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/products/{{product_id}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"products",
-								"{{product_id}}"
-							]
-						}
-					}
-				},
-				{
-					"name": "Delete Product",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/products/{{product_id}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"products",
-								"{{product_id}}"
-							]
-						}
-					}
-				}
-			]
-		},
-		{
-			"name": "4. Cart & Checkout",
-			"item": [
-				{
-					"name": "Add to Cart",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"productId\": \"{{product_id}}\",\n    \"quantity\": 1\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/cart",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"cart"
-							]
-						}
-					}
-				},
-				{
-					"name": "Get My Cart",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/cart",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"cart"
-							]
-						}
-					}
-				},
-				{
-					"name": "Clear Cart",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/cart",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"cart"
-							]
-						}
-					}
-				}
-				{
-					"name": "Get Checkout Session (Stripe)",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"shippingAddress\": {\n        \"recipientName\": \"John Doe\",\n        \"line1\": \"123 Tech Avenue\",\n        \"city\": \"San Francisco\",\n        \"postalCode\": \"94105\",\n        \"country\": \"US\"\n    }\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/orders/checkout-session",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"orders",
-								"checkout-session"
-							]
-						}
-					}
-				}
-			]
-		},
-		{
-			"name": "5. Admin Operations",
-			"item": [
-				{
-					"name": "List All Users",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/users",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"users"
-							]
-						}
-					}
-				}
-			]
-		}
-	],
-	"variable": [
-		{
-			"key": "base_url",
-			"value": "http://localhost:5000/api/v1"
-		},
-		{
-			"key": "token",
-			"value": ""
-		},
-		{
-			"key": "category_id",
-			"value": ""
-		},
-		{
-			"key": "product_id",
-			"value": ""
-		}
-	]
+  "info": {
+    "name": "E-Commerce Master API",
+    "description": "Complete Flow: Auth, CRUD, Admin Lists, Cart, and Stripe Checkout",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. User & Auth",
+      "item": [
+        {
+          "name": "Signup",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Test Admin\",\n    \"email\": \"admin@example.com\",\n    \"password\": \"password123\",\n    \"role\": \"admin\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/signup",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "signup"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) { pm.environment.set(\"token\", jsonData.token); }"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"admin@example.com\",\n    \"password\": \"password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List All Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Edit User (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"role\": \"admin\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/users/{{target_user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "{{target_user_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/{{target_user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "{{target_user_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. Category Management",
+      "item": [
+        {
+          "name": "List All Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/categories",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Category",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "// Use your actual response structure: { status: 'success', data: { category: { _id: \"...\" } } }",
+                  "if (jsonData.data && jsonData.data.category && jsonData.data.category._id) {",
+                  "    pm.environment.set(\"category_id\", jsonData.data.category._id);",
+                  "} else if (jsonData.data && jsonData.data._id) {",
+                  "    pm.environment.set(\"category_id\", jsonData.data._id);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Electronics\",\n    \"slug\": \"electronics\",\n    \"description\": \"All tech gadgets\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/categories",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Edit Category",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Modern Electronics\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/categories/{{category_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "categories",
+                "{{category_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/categories/{{category_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "categories",
+                "{{category_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3. Product Management",
+      "item": [
+        {
+          "name": "List All Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Parse the response",
+                  "var jsonData = pm.response.json();",
+                  "",
+                  "// Based on your controller: res.status(201).json({ status: 'success', data: { product } });",
+                  "if (jsonData.data && jsonData.data.product && jsonData.data.product._id) {",
+                  "    var id = jsonData.data.product._id;",
+                  "    pm.environment.set(\"product_id\", id);",
+                  "    console.log(\"Product ID saved successfully: \" + id);",
+                  "} else {",
+                  "    console.log(\"Could not find product _id in response. Check the Console (Ctrl+Alt+C)\");",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "MacBook Pro",
+                  "type": "text"
+                },
+                {
+                  "key": "price",
+                  "value": "2400",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "M3 Chip Laptop",
+                  "type": "text"
+                },
+                {
+                  "key": "category",
+                  "value": "{{category_id}}",
+                  "type": "text"
+                },
+                {
+                  "key": "stock",
+                  "value": "10",
+                  "type": "text"
+                },
+                {
+                  "key": "images",
+                  "type": "file",
+                  "value": null
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Edit Product",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"price\": 2299\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/products/{{product_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products",
+                "{{product_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/products/{{product_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products",
+                "{{product_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "4. Cart & Checkout",
+      "item": [
+        {
+          "name": "Add to Cart",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"productId\": \"{{product_id}}\",\n    \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/cart/add",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cart",
+                "add"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Cart",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/cart",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cart"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Clear Cart",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/cart",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cart"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Checkout Session (Stripe)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"shippingAddress\": {\n        \"recipientName\": \"John Doe\",\n        \"line1\": \"123 Tech Avenue\",\n        \"city\": \"San Francisco\",\n        \"postalCode\": \"94105\",\n        \"country\": \"US\"\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/orders/checkout-session",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "orders",
+                "checkout-session"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ]
 }
