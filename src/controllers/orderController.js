@@ -38,18 +38,6 @@ exports.stripeWebhook = async (req, res) => {
         return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 
-    // // Handle the specific event
-    // if (event.type === 'checkout.session.completed') {
-    //     const session = event.data.object;
-
-    //     console.log(`Payment successful for Session: ${session.id}`);
-    //     // console.log('--- STRIPE SESSION DATA ---');
-    //     // console.log(JSON.stringify(session, null, 2)); // This will show you exactly where shipping_details is
-
-    //     // Create order and clear cart
-    //     await orderService.finalizeOrder(session);
-    // }
-
     const session = event.data.object;
 
     switch (event.type) {

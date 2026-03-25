@@ -109,7 +109,7 @@ docker-compose run --rm api npm run test:coverage
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
 | `POST` | `/api/v1/cart` | Add items to cart |
-| `POST` | `/api/v1/orders/checkout` | Create Stripe Checkout Session |
+| `POST` | `/api/v1/orders/checkout-session` | Create Stripe Checkout Session |
 | `POST` | `/webhook` | Stripe Webhook (Success/Fail/Expire) |
 
 ---

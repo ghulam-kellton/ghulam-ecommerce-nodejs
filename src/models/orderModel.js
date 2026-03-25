@@ -9,7 +9,6 @@ const orderSchema = new mongoose.Schema({
         quantity: { type: Number, required: true, min: 1 }
     }],
     totalAmount: { type: Number, required: true },
-    // shippingAddress: { type: String, required: true },
     shippingAddress: {
         recipientName: String,
         line1: String,

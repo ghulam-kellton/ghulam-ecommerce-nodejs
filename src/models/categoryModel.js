@@ -11,7 +11,7 @@ const categorySchema = new mongoose.Schema({
     description: String
 }, { timestamps: true });
 
-// Auto-generate slug (e.g., "Home Appliances" -> "home-appliances")
+// Slug (e.g., "Home Appliances" -> "home-appliances")
 categorySchema.pre('save', function (next) {
     this.slug = this.name.split(' ').join('-').toLowerCase();
     next();

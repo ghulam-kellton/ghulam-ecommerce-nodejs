@@ -11,7 +11,7 @@ const app = express();
 app.use(helmet());
 app.use(cors());
 app.use(morgan('dev'));
-// 1. Stripe Webhook (Raw body needed)
+// Stripe Webhook (Raw body needed)
 app.post('/webhook', express.raw({ type: 'application/json' }), orderController.stripeWebhook);
 app.use(express.json());
 

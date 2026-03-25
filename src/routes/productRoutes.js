@@ -17,12 +17,12 @@ router.post(
     productController.addProduct
 );
 
-// PATCH is preferred for partial updates
+// PATCH for partial updates
 router.patch(
     '/:id',
     protect,
     restrictTo('admin'),
-    upload.array('images', 5), // 'images' is the field name, limit to 5 files
+    upload.array('images', 5), // limit to 5 files
     productController.editProduct
 );
 

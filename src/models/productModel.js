@@ -10,7 +10,7 @@ const productSchema = new mongoose.Schema({
         required: true
     },
     stock: { type: Number, required: true, default: 0 },
-    images: [String] // URLs to Cloudinary/S3
+    images: [String] // Cloudinary URL
 }, { timestamps: true });
 
 module.exports = mongoose.model('Product', productSchema);

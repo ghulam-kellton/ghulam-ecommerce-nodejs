@@ -12,8 +12,6 @@ router.use(protect, restrictTo('admin'));
 
 router.post('/', categoryController.createCategory);
 router.delete('/:id', categoryController.deleteCategory);
-
-// PATCH is preferred for partial updates
 router.patch('/:id', categoryController.editCategory);
 
 module.exports = router;

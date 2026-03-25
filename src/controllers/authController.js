@@ -9,7 +9,7 @@ exports.signup = async (req, res, next) => {
             data: { user }
         });
     } catch (err) {
-        next(err); // Passes to the global error handler
+        next(err);
     }
 };
 

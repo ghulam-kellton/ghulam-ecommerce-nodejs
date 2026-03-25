@@ -24,21 +24,18 @@ exports.getCategoryBySlug = async (slug) => {
 };
 
 exports.updateProduct = async (categoryId, updateData) => {
-    // 1. Check if category exists
+    // Check if category exists
     const category = await Category.findById(categoryId);
     if (!category) {
         throw new Error('Category not found');
     }
 
-    // 2. If name is being updated, we might need to regenerate the slug
-    // (This assumes your model has a slug field)
+    // If name is being updated, we might need to regenerate the slug
     if (updateData.name) {
         updateData.slug = updateData.name.toLowerCase().split(' ').join('-');
     }
 
-    // 3. Perform the update
-    // { new: true } returns the document AFTER the update
-    // { runValidators: true } ensures the new data follows Schema rules (e.g., price > 0)
+    // Perform the update
     const updatedCategory = await Category.findByIdAndUpdate(
         categoryId,
         updateData,

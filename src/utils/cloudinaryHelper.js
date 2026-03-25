@@ -2,7 +2,7 @@ const cloudinary = require('cloudinary').v2;
 
 exports.deleteImageFromCloudinary = async (imageUrl) => {
     try {
-        // URL looks like: .../ecommerce-products/v12345/image_name.jpg
+        // URL .../ecommerce-products/v12345/image_name.jpg
         // We need: ecommerce-products/image_name
         const parts = imageUrl.split('/');
         const fileName = parts[parts.length - 1].split('.')[0];

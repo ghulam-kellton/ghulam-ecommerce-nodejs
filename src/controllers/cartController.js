@@ -22,7 +22,6 @@ exports.viewCart = async (req, res, next) => {
 
 exports.clearCart = async (req, res, next) => {
     try {
-        // req.user.id comes from the 'protect' middleware
         await cartService.clearUserCart(req.user.id);
 
         res.status(200).json({

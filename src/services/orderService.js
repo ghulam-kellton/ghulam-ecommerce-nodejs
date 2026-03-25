@@ -58,14 +58,14 @@ exports.getUserOrders = async (userId) => {
 };
 
 exports.createCheckoutSession = async (userId) => {
-    // 1. Fetch user's cart with product details
+    // Fetch user's cart with product details
     const cart = await cartService.getCart(userId);
 
     if (!cart || cart.items.length === 0) {
         throw new Error('Your cart is empty');
     }
 
-    // 2. Map cart items to Stripe "Line Items" format
+    // Map cart items to Stripe "Line Items" format
     const lineItems = cart.items.map(item => {
         return {
             price_data: {
@@ -74,7 +74,7 @@ exports.createCheckoutSession = async (userId) => {
                     name: item.product.name,
                     images: item.product.images, // Array of strings
                 },
-                unit_amount: Math.round(item.product.price * 100), // Convert $ to Cents
+                unit_amount: Math.round(item.product.price * 100),
             },
             quantity: item.quantity,
         };
@@ -86,19 +86,16 @@ exports.createCheckoutSession = async (userId) => {
         success_url: `${process.env.FRONTEND_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${process.env.FRONTEND_URL}/cart`,
         customer_email: cart.user.email,
-        client_reference_id: userId.toString(), // Crucial for Webhook
+        client_reference_id: userId.toString(),
         line_items: lineItems,
         mode: 'payment',
-        // 1. ADD THIS: Tell Stripe to collect the address
         shipping_address_collection: {
-            allowed_countries: ['IN'], // List the ISO codes you support
+            allowed_countries: ['IN'],
         },
 
-        // 2. OPTIONAL: Collect phone number if needed for delivery
         phone_number_collection: {
             enabled: true,
         },
-        // Metadata allows us to pass extra info to the Webhook
         metadata: {
             cartId: cart._id.toString()
         },
@@ -116,7 +113,7 @@ exports.finalizeOrder = async (session) => {
     const shippingDetails = session.collected_information.shipping_details;
     const address = shippingDetails.address; // contains line1, city, state, postal_code, country
 
-    // 1. Create the Order document
+    // Create the Order document
     const order = await Order.create({
         user: userId,
         items: cart.items.map(item => ({
@@ -125,10 +122,9 @@ exports.finalizeOrder = async (session) => {
             price: item.product.price,
             quantity: item.quantity
         })),
-        totalAmount: session.amount_total / 100, // Convert back from cents
+        totalAmount: session.amount_total / 100,
         paymentStatus: 'paid',
         stripeSessionId: session.id,
-        // 3. SAVE TO DB: Store the address we got from Stripe
         shippingAddress: {
             recipientName: shippingDetails.name,
             line1: address.line1,
@@ -143,24 +139,11 @@ exports.finalizeOrder = async (session) => {
     // 2. Clear the User's Cart
     await cartService.clearUserCart(userId);
 
-    // 3. Optional: Trigger Email or Stock Reduction here
     return order;
 };
 
 exports.handlePaymentFailure = async (session, reason) => {
     const userId = session.client_reference_id;
 
-    // Log the failure in your database or a logging service (like Winston/Sentry)
     console.error(`Payment ${reason} for User ${userId}. Session ID: ${session.id}`);
-
-    // OPTIONAL: Create a "Failed" order record so you can see it in your admin panel
-    // or send a "Hey, did you forget something?" email.
-    /*
-    await Order.create({
-      user: userId,
-      paymentStatus: 'failed',
-      stripeSessionId: session.id,
-      // totalAmount, etc.
-    });
-    */
 };

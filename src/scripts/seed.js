@@ -22,7 +22,7 @@ const seedData = async () => {
         const admin = await User.create({
             name: 'Admin User',
             email: 'admin@ecommerce.com',
-            password: 'password123', // Ensure your User model hashes this in a 'pre-save' hook
+            password: 'password123',
             role: 'admin'
         });
         console.log('Admin User created.');

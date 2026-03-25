@@ -12,7 +12,7 @@ router.get(
     userController.getUsers
 );
 
-// PATCH is preferred for partial updates
+// PATCH for partial updates
 router.patch(
     '/:id',
     protect,

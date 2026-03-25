@@ -2,18 +2,18 @@ const Cart = require('../models/cartModel');
 const Product = require('../models/productModel');
 
 exports.addToCart = async (userId, productId, quantity = 1) => {
-    // 1. Verify product exists and is in stock
+    // Verify product exists and is in stock
     const product = await Product.findById(productId);
     if (!product) throw new Error('Product not found');
     if (product.stock < quantity) throw new Error('Not enough stock available');
 
-    // 2. Find user's cart or create a new one
+    // Find user's cart or create a new one
     let cart = await Cart.findOne({ user: userId });
     if (!cart) {
         cart = await Cart.create({ user: userId, items: [] });
     }
 
-    // 3. Check if product already exists in cart
+    // Check if product already exists in cart
     const itemIndex = cart.items.findIndex(p => p.product.toString() === productId);
 
     if (itemIndex > -1) {
