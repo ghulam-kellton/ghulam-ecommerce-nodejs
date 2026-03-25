@@ -20,54 +20,71 @@ The project follows a **Layered Architecture (Service-Repository Pattern)** to s
 
 ```mermaid
 erDiagram
-    USER ||--o{ ORDER : places
-    USER ||--|| CART : owns
-    CATEGORY ||--o{ PRODUCT : categorizes
-    CART ||--o{ CART_ITEM : contains
-    PRODUCT ||--o{ CART_ITEM : "added to"
+    USER ||--|| CART : "owns (1:1)"
+    USER ||--o{ ORDER : "places (1:N)"
+    CATEGORY ||--o{ PRODUCT : "categorizes (1:N)"
+    CATEGORY ||--o{ CATEGORY : "parent of (Self-Ref)"
 
-    %% Note: Items are embedded in Order, but reference Product
-    PRODUCT ||--o{ ORDER : "referenced in items"
+    %% Array Relationships (Embedded in MongoDB)
+    CART ||--|{ CART_ITEM : "contains (Array)"
+    ORDER ||--|{ ORDER_ITEM : "snapshots (Array)"
+    PRODUCT ||--o{ CART_ITEM : "referenced by"
+    PRODUCT ||--o{ ORDER_ITEM : "referenced by"
 
     USER {
         ObjectId _id PK
         string name
         string email UK
+        string password "hidden"
+        string role "customer/admin"
+        boolean active
+        date createdAt
+    }
+
+    CART {
+        ObjectId _id PK
+        ObjectId user FK "unique"
+        date createdAt
+    }
+
+    CART_ITEM {
+        ObjectId product FK
+        number quantity
+    }
+
+    CATEGORY {
+        ObjectId _id PK
+        string name UK
+        string slug UK
+        ObjectId parentCategory FK "Self-Reference"
+        string description
     }
 
     PRODUCT {
         ObjectId _id PK
         string name
+        string description
         number price
-        ObjectId category_id FK
+        ObjectId category FK
+        number stock
+        string[] images "Cloudinary URLs"
     }
 
     ORDER {
         ObjectId _id PK
-        ObjectId user_id FK
-        array items "Embedded Array"
-        object shippingAddress "Nested Object"
+        ObjectId user FK
         number totalAmount
         string status "pending/processing/shipped/delivered/cancelled"
         string paymentStatus "unpaid/paid"
+        object shippingAddress "Nested Object"
         date createdAt
     }
 
-    %% Detail of the embedded objects for clarity
-    ORDER ||--|{ EMBEDDED_ITEM : "contains (Array)"
-    EMBEDDED_ITEM {
-        ObjectId product_id FK
-        string name
-        number price
-        int quantity
-    }
-
-    ORDER ||--|| NESTED_SHIPPING : "has (Object)"
-    NESTED_SHIPPING {
-        string recipientName
-        string line1
-        string city
-        string postalCode
+    ORDER_ITEM {
+        ObjectId product FK
+        string name "Historical Snapshot"
+        number price "Historical Snapshot"
+        number quantity
     }
 ```
 
