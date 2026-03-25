@@ -51,19 +51,23 @@ const Category = require('../src/models/categoryModel');
 const path = require('path');
 const fs = require('fs');
 
-describe('E2E Order Processing Flow', () => {
+describe('E-Commerce Backend API', () => {
     let token;
     let userId;
     let productId;
 
     beforeAll(async () => {
-        // Clean up potential leftovers
-        await User.deleteMany({});
-        await Category.deleteMany({});
-        await Product.deleteMany({});
-        await Order.deleteMany({});
-        // Connect to a test DB
+        // Connect to the Test DB
         await mongoose.connect(process.env.MONGO_URI_TEST);
+
+        // Clean up the data
+        await Promise.all([
+            User.deleteMany({}),
+            Category.deleteMany({}),
+            Product.deleteMany({}),
+            Order.deleteMany({}),
+            Cart.deleteMany({})
+        ]);
 
         // Create a real Category document
         const category = await Category.create({
