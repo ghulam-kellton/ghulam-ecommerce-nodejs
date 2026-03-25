@@ -1,4 +1,4 @@
-Here is a comprehensive `README.md` for the e-commerce backend. It covers the Dockerized setup, the architecture we've built, and the API flow we've been testing.
+Here is a comprehensive `README.md` for the e-commerce backend. It covers the Dockerized setup, the architecture and the API flow.
 
 ---
 
@@ -24,60 +24,50 @@ erDiagram
     USER ||--|| CART : owns
     CATEGORY ||--o{ PRODUCT : categorizes
     CART ||--o{ CART_ITEM : contains
-    ORDER ||--o{ ORDER_ITEM : consists_of
-    PRODUCT ||--o{ CART_ITEM : "added as"
-    PRODUCT ||--o{ ORDER_ITEM : "purchased as"
+    PRODUCT ||--o{ CART_ITEM : "added to"
+
+    %% Note: Items are embedded in Order, but reference Product
+    PRODUCT ||--o{ ORDER : "referenced in items"
 
     USER {
         ObjectId _id PK
         string name
         string email UK
-        string password
-        string role "user/admin"
-        date createdAt
-    }
-
-    CATEGORY {
-        ObjectId _id PK
-        string name UK
-        string slug UK
     }
 
     PRODUCT {
         ObjectId _id PK
         string name
-        string description
         number price
-        string[] images "Cloudinary URLs"
-        string[] cloudinary_ids "For deletion"
         ObjectId category_id FK
-        int stock
-    }
-
-    CART {
-        ObjectId _id PK
-        ObjectId user_id FK
-    }
-
-    CART_ITEM {
-        ObjectId product_id FK
-        int quantity
     }
 
     ORDER {
         ObjectId _id PK
         ObjectId user_id FK
-        string stripeSessionId UK
-        string status "pending/paid/failed/expired"
+        array items "Embedded Array"
+        object shippingAddress "Nested Object"
         number totalAmount
-        string shippingAddress
+        string status "pending/processing/shipped/delivered/cancelled"
+        string paymentStatus "unpaid/paid"
         date createdAt
     }
 
-    ORDER_ITEM {
+    %% Detail of the embedded objects for clarity
+    ORDER ||--|{ EMBEDDED_ITEM : "contains (Array)"
+    EMBEDDED_ITEM {
         ObjectId product_id FK
+        string name
+        number price
         int quantity
-        number price "Snapshot at time of purchase"
+    }
+
+    ORDER ||--|| NESTED_SHIPPING : "has (Object)"
+    NESTED_SHIPPING {
+        string recipientName
+        string line1
+        string city
+        string postalCode
     }
 ```
 
