@@ -1,5 +1,4 @@
 const mockConstructEvent = jest.fn();
-process.env.CLOUDINARY_FOLDER = 'test_folder';
 jest.mock('stripe', () => {
     return jest.fn().mockImplementation(() => ({
         checkout: {
