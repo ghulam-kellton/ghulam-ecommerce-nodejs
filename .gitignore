@@ -1,0 +1,21 @@
+# Dependency folders
+node_modules/
+
+# Environment variables (NEVER COMMIT THESE)
+.env
+.env.local
+.env.test
+
+# Testing and Coverage
+coverage/
+test-report.html
+test-report.json
+
+# IDE / System files
+.vscode/
+.idea/
+.DS_Store
+thumbs.db
+
+# Docker
+.dockerignore
