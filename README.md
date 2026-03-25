@@ -1,10 +1,10 @@
-Here is a comprehensive `README.md` for your e-commerce backend. It covers the Dockerized setup, the architecture you've built, and the API flow we've been testing.
+Here is a comprehensive `README.md` for the e-commerce backend. It covers the Dockerized setup, the architecture we've built, and the API flow we've been testing.
 
 ---
 
 # 🛒 E-Commerce Backend API
 
-A robust, Dockerized Node.js RESTful API for e-commerce, featuring **Stripe** payments, **Cloudinary** image processing, and **Jest** E2E testing with 100% logic coverage.
+A robust, Dockerized Node.js RESTful API for e-commerce, featuring **Stripe** payments, **Cloudinary** image processing, and **Jest** E2E testing with logic coverage.
 
 ## 🏗 Architecture Overview
 
@@ -61,14 +61,17 @@ erDiagram
 Create a `.env` file in the root directory:
 ```env
 PORT=5000
-MONGO_URI=mongodb://mongodb:27017/ecommerce_db
-JWT_SECRET=your_jwt_secret
+MONGO_URI=mongo_url
+MONGO_URI_TEST=mongo_url_test
+JWT_SECRET=jwt_secret
+JWT_EXPIRES_IN=7d
 STRIPE_SECRET_KEY=sk_test_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 CLOUDINARY_CLOUD_NAME=...
 CLOUDINARY_API_KEY=...
 CLOUDINARY_API_SECRET=...
-CLOUDINARY_FOLDER=ecommerce-products
+CLOUDINARY_CLOUD_NAME=ecommerce-products
+FRONTEND_URL=https://google.com
 ```
 
 ### 2. Run with Docker
